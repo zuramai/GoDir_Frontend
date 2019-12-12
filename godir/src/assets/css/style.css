@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web&display=swap');
+
+.card {
+    font-family: 'Titillium Web', sans-serif;
+}
+button {
+    transition: all .2s;
+}
+.vs-input--placeholder {
+    padding-top: .7rem;
+}
+
+.vs-inputx {
+    width: 100% !important;
+}
+
+.vs-con-input-label {
+    width: unset !important
+}
+
+.vs-button {
+    padding: 10px 20px;
+}
+
+.card {
+    /* box-shadow: 10px 10px 20px rgba(0, 0, 0, .3); */
+}
+
+.bg-blue2 {
+    background-color: #2e86de;
+}
+
+.card-body {
+    background-color: #fff;
+}
+
+.btn-feature {
+    transition: all .2s;
+}
+
+.btn-feature:hover {
+    background-color: #eee;
+}
+
+.bg-topbar {
+    background-color: #576574;
+}
+
+.files {
+    height: 80vh;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.table-files thead tr {
+    border: 1px solid #eee;
+}
+
+.table-files .per-file {
+    border-bottom: 1px solid #eee;
+}
+
+.table-files .per-file:hover {
+    background: #ddd;
+}
+
+.per-file {
+    /* transition: all .2s; */
+}
+
+.per-file.selected {
+    background-color: #D7EDF9;
+}
+
+.per-file.selected:hover {
+    background-color: #D7EDF9;
+}
