@@ -25,10 +25,10 @@
                         <div class="flex">
                             <div class="w-1/4 ">
                                 <router-link to="/file-manager" class='inline-flex btn-feature p-3 rounded-sm '>
-                                    <img src="@/assets/images/svg/filemanager.svg" class='w-8 h-8' alt="">
+                                    <img src="@/assets/images/svg/PhpMyAdmin_logo.svg" class='w-8 h-8' alt="">
                                     <p class='ml-2 leading-loose'>PHPMyAdmin</p>
                                 </router-link>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                         <div class="flex">
                             <div class="w-1/4 ">
                                 <router-link to="/file-manager" class='inline-flex btn-feature p-3 rounded-sm '>
-                                    <img src="@/assets/images/svg/filemanager.svg" class='w-8 h-8' alt="">
+                                    <img src="@/assets/images/png/icons8-console-30.png" class='w-8 h-8' alt="">
                                     <p class='ml-2 leading-loose'>Terminal</p>
                                 </router-link>
                             </div>
