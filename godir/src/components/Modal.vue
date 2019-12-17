@@ -24,7 +24,8 @@ export default {
   props: {
     showing: {
       required: true,
-      type: Boolean
+      type: Boolean,
+      size: String
     }
   },
   methods: {

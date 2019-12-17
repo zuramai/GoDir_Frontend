@@ -15,13 +15,24 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Modal from './components/Modal.vue';
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = "http://localhost:9000/v1";
+
 library.add(fas);
 
 const logged_user = localStorage.getItem('godir_user') || undefined;
+const apiBaseUrl = "http://localhost:9000/v1";
+axios.defaults.baseURL = apiBaseUrl;
+
 
 Vue.prototype.$axios = axios;
-Vue.prototype.$auth = JSON.parse(logged_user);
+Vue.prototype.$apiBaseUrl = apiBaseUrl;
+
+
+if(logged_user != undefined) {
+  Vue.prototype.$auth = JSON.parse(logged_user);
+}else{
+  Vue.prototype.$auth = undefined;
+}
+
 
 
 // COMPONENTS

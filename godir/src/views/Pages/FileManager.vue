@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="w-4/5 px-4">
-            <div class="files w-full bg-white shadow-xl rounded-lg overflow-scroll relative">
+            <div class="files w-full bg-white shadow-xl rounded-lg overflow overflow-auto relative">
                 <div id='card-files' class="flex items-center justify-center  h-full w-full absolute" v-if="file_manager_loading">
                     <div>
                         <semipolar-spinner
@@ -60,7 +60,7 @@
                         <font-awesome-icon :icon="['fas', 'trash']" />
                         <span class='ml-2'>Delete</span>
                     </button>
-                    <button class='btn-action' @click="uploadFiles">
+                    <button class='btn-action' @click="uploadModalShow=true">
                         <font-awesome-icon :icon="['fas', 'upload']" />
                         <span class='ml-2'>Upload</span>
                     </button>
@@ -72,6 +72,10 @@
                         <button class='bg-blue-400 hover:bg-blue-500 float-right py-2 px-2 text-white rounded-sm mr-2' @click="newFolder">Submit</button>
                     </div>
                 </modal>
+                <modal :showing="uploadModalShow" @close="uploadModalShow = false">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Upload File</h2>
+                    <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+                </modal>
                 <div class="file-content ">
                     <table class="table-auto w-full table-files">
                         <thead>
@@ -82,9 +86,9 @@
                                 <th class=" bg-gray-300 w-1/4 px-4 py-4 text-md rounded-tr-sm">Last Modified</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class='tbody-file'>
                             
-                            <tr v-for="(currentDirectoryFile, index) in currentDirectoryFiles" :key="currentDirectoryFile.id" :class='{"per-file":true, "selected":selectedFile.includes(index)}' @click="selectFile(index, $event)" @dblclick="goToFile(currentDirectoryFile)">
+                            <tr v-for="(currentDirectoryFile, index) in currentDirectoryFiles" :key="currentDirectoryFile.id" :class='{"per-file":true, "selected":selectedFile.includes(index)}' @click="selectFile(currentDirectoryFile, index, $event)" @dblclick="goToFile(currentDirectoryFile)">
                                 <td class='px-2'>
                                     <template v-if="currentDirectoryFile.file_type == 'Folder'">
                                         <img src="@/assets/images/svg/icons8-folder.svg" alt="">
@@ -110,6 +114,8 @@
 <script>
 import moment from 'moment'
 import { SemipolarSpinner  } from 'epic-spinners'
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 export default {
     mounted() {
         let rootdir = this.$auth.root_path;
@@ -134,6 +140,7 @@ export default {
     },
     components: {
         SemipolarSpinner,
+        vueDropzone: vue2Dropzone
     },
     data() {
         return {
@@ -145,6 +152,12 @@ export default {
             historyFolderView: [],
             newFolderModalShow: false,
             newFolderName: '',
+            upload: '',
+
+            order:'asc',
+            orderBy:'type',
+
+            uploadModalShow: false,
             fromRootDirectoryFiles: [
                 {
                     id: "141312",
@@ -171,7 +184,19 @@ export default {
                         }
                     ]
                 },
-            ]
+            ],
+            dropzoneOptions: {
+                url: this.$apiBaseUrl+'/directory/upload',
+                thumbnailWidth: 150,
+                maxFilesize: 0.5,
+                headers: { auth_key: this.$auth.auth_key, user_id: this.$auth.id },
+                acceptedFiles: '.zip',
+                init: function() {
+                    this.on("sending", function(file, xhr, formData) {
+                    formData.append("path", this.currentDirectoryPath);
+                    });
+                }
+            }
         }
     },
     watch: {
@@ -195,7 +220,7 @@ export default {
         }
     },
     methods: {
-        selectFile(index, event) {
+        selectFile(file, index, event) {
             
             if(this.selectedFile.includes(index)) {
                 var indexDiArray = this.selectedFile.indexOf(index);
@@ -213,7 +238,7 @@ export default {
         },
         getDirectoryFiles(path) {
             this.file_manager_loading = true;
-            this.$axios.post('/directory', { path }, { headers: { auth_key: this.$auth.auth_key, user_id: this.$auth.id } })
+            this.$axios.post('/directory', { path }, {params: { order: this.order, orderBy: this.orderBy }, headers: { auth_key: this.$auth.auth_key, user_id: this.$auth.id } })
                 .then(res => {
                     this.currentDirectoryFiles = res.data.returned_data;
                     this.file_manager_loading = false;
@@ -262,7 +287,9 @@ export default {
                 })
         },
         deleteFiles() {
-            let path  = this.selectedFile[0];
+            let selectedIndex  = this.selectedFile[0];
+            let path = this.currentDirectoryFiles[selectedIndex].file_path;
+            
             this.$axios.post('directory/delete', { path }, {headers: { auth_key: this.$auth.auth_key, user_id: this.$auth.id }})
                 .then(res => {
                     this.currentDirectoryFiles = [];
@@ -302,6 +329,7 @@ export default {
         cursor: not-allowed;
         color: #999;
     }
+
 
     @keyframes breathing-opacity {
         0% {
